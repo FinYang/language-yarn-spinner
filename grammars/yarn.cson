@@ -1,0 +1,269 @@
+# MIT License
+#
+# Copyright (c) 2020 Secret Lab Pty Ltd and Yarn Spinner Contributors
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+scopeName: 'source.yarnspinner'
+name: 'Yarn Spinner'
+fileTypes: [
+  'yarn'
+]
+
+"patterns": [
+  {
+    "include": "#nodes"
+  }
+]
+"repository": {
+  "nodes": {
+    "patterns": [
+      {
+        "comment": "Header field name"
+        "match": "^\\w+\\:"
+        "name": "keyword.other"
+      }
+      {
+        "match": "(?<=:).*$"
+        "name": "keyword.control"
+      }
+      {
+        "include": "#nodebody"
+      }
+    ]
+  }
+  "nodebody": {
+    "begin": "---"
+    "end": "==="
+    "patterns": [
+      {
+        "include": "#comments"
+      }
+      {
+        "include": "#lines"
+      }
+      {
+        "include": "#commands"
+      }
+      {
+        "include": "#options"
+      }
+    ]
+  }
+  "inline_expressions": {
+    "begin": "{"
+    "end": "}"
+    "name": "keyword.other"
+    "patterns": [
+      {
+        "include": "#strings"
+      }
+      {
+        "include": "#operators"
+      }
+      {
+        "include": "#variables"
+      }
+      {
+        "include": "#numbers"
+      }
+    ]
+  }
+
+  "comments": {
+    "patterns": [
+      {
+        "name": "comment.line.double-slash.yarnspinner"
+        "begin": "\/\/"
+        "end": "$"
+      }
+    ]
+  }
+
+  "commands": {
+    "patterns": [
+      {
+        "name": "keyword.other"
+        "begin": "\\<\\<"
+        "end": "\\>\\>"
+        "patterns": [
+          {
+            "comment": "First word in a command"
+            "match": "(?<=\\<\\<)\\w+"
+            "name": "keyword.control"
+          }
+          {
+            "include": "#keywords"
+          }
+          {
+            "include": "#strings"
+          }
+          {
+            "include": "#operators"
+          }
+          {
+            "include": "#variables"
+          }
+          {
+            "include": "#numbers"
+          }
+        ]
+      }
+    ]
+  }
+
+  "variables": {
+    "patterns": [
+      {
+        "name": "variable.other"
+        "match": "\\$\\w+"
+      }
+    ]
+  }
+  "keywords": {
+    "patterns": [
+      {
+        "name": "keyword.control.yarnspinner"
+        "match": "\\b(if|set|endif|else|elseif)\\b"
+      }
+    ]
+  }
+  "operators": {
+    "patterns": [
+      {
+        "name": "keyword.operator"
+        "match": "\\+|-|\\*\\/|\\!|\\<|\\>|=|==|\\<=|\\>="
+      }
+      {
+        "name": "keyword.operator"
+        "match": "\\b(is|to|not|ne|eq|le|ge|gt|lt|and|or)\\b"
+      }
+    ]
+  }
+  "strings": {
+    "name": "string.quoted.double.yarnspinner"
+    "begin": "\""
+    "end": "\""
+    "patterns": [
+      {
+        "name": "constant.character.escape.yarnspinner"
+        "match": "\\\\."
+      }
+    ]
+  }
+  "numbers": {
+    "name": "constant.numeric"
+    "match": "\\b([+-]?([0-9]*[.])?[0-9]+)\\b"
+
+  }
+  "lines": {
+    "patterns": [
+      {
+        "comment": "Hashtags"
+        "name": "constant.language"
+        "match": "#[^\\s]+"
+      }
+      {
+        "comment": "Name"
+        "name": "markup.bold"
+        "match": "(?<=^|-\\>)\\s*\\w+\\:"
+
+      }
+      {
+        "comment": "Shortcut option"
+        "name": "keyword.control"
+        "match": "^\\s*-\\>"
+      }
+      {
+        "include": "#commands"
+      }
+      {
+        "include": "#inline_expressions"
+      }
+      {
+        "include": "#format_functions"
+      }
+    ]
+  }
+  "options": {
+    "patterns": [
+      {
+        "begin": "\\[\\["
+        "end": "\\]\\]"
+        "name": "keyword.other"
+        "patterns": [
+          {
+            "match": "\\|"
+            "name": "keyword.other"
+          }
+          {
+            "include": "#inline_expressions"
+          }
+          {
+            "include": "#format_functions"
+          }
+          {
+            "comment": "The option text shown to player"
+            "match": ".+?(?=\\|)"
+            "name": "none"
+          }
+          {
+            "comment": "Displayed text in an option"
+            "match": "[^{|\\]]+"
+            "name": "keyword.control"
+          }
+        ]
+      }
+    ]
+  }
+  "format_functions": {
+    "patterns": [
+      {
+        "begin": "\\[(?!\\[)"
+        "end": "\\]"
+        "name": "keyword.other.format_function"
+        "patterns": [
+          {
+            "include": "#inline_expressions"
+          }
+          {
+            "name": "string.quoted.double.yarnspinner.format_function"
+            "begin": "\""
+            "end": "\""
+            "patterns": [
+              {
+                "name": "keyword.other.format_function.placeholder"
+                "match": "%"
+              }
+              {
+                "name": "constant.character.escape.yarnspinner.format_function"
+                "match": "\\\\."
+              }
+            ]
+
+          }
+          {
+            "match": "[^{=\\]]+"
+            "name": "keyword.control"
+          }
+        ]
+      }
+    ]
+  }
+}

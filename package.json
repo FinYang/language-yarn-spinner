@@ -1,0 +1,15 @@
+{
+  "name": "language-yarn-spinner",
+  "main": "./lib/language-yarn-spinner",
+  "version": "0.0.0",
+  "description": "An Atom syntex package for Yarn Spinner.",
+  "keywords": [
+  ],
+  "repository": "https://github.com/FinYang/language-yarn-spinner",
+  "license": "MIT",
+  "engines": {
+    "atom": ">=1.0.0 <2.0.0"
+  },
+  "dependencies": {
+  }
+}
